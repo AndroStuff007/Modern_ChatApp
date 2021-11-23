@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "113360129709",
+    "project_id": "modernchatapp",
+    "storage_bucket": "modernchatapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113360129709:android:93c3a8637ba7a8d9f88024",
+        "android_client_info": {
+          "package_name": "com.AndroStuff.modern_chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113360129709-i7ms6nrprq7rtasp7i3nht5mn2gn8vfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCOG28PK6s3CiFUU7GXVtKaG5icCRlxyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113360129709-i7ms6nrprq7rtasp7i3nht5mn2gn8vfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
