@@ -1,22 +1,24 @@
 package com.AndroStuff.modern_chatapp
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     //Declaration
+    private lateinit var storage:FirebaseStorage
     private lateinit var mobilenumber : EditText
     private lateinit var entereedOtp : EditText
     private lateinit var sendOtpButton : Button
@@ -36,14 +39,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth;
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     var storedVerificationId:String = ""
+    private lateinit var imagefile:Uri
     lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private val PICK_CODE = 1000;
     var permissionGranted : Boolean = false
-
-
+    private lateinit var   storageReference:StorageReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        storage=Firebase.storage
+        storageReference=storage.reference
+        //this below will bypass repetation of otp if auth?
+    /*if(auth.currentUser!=null)
+        SetVisibility(1)*/
+
+
 
         if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -125,16 +137,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
+//setup.setOnClickListener { uploadtocloudstorage(imagefile) }
     }
 
 
     //Methods
     private fun fetchImage() {
         Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent,PICK_CODE)
+//        val intent = Intent(Intent.ACTION_PICK)
+  //      intent.type = "image/*"
+    //    startActivityForResult(intent,PICK_CODE)
+
+        val intent=Intent()
+        intent.type="image/*"
+        intent.action=Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent,"Select Profile"),PICK_CODE)
 
 
     }
@@ -204,7 +221,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK && requestCode == PICK_CODE){
             Profile.setImageURI(data?.data)
-            val external = Environment.getExternalStorageState()
+            imagefile = data?.data!!
+uploadtocloudstorage(data?.data!!)
+//            val external = Environment.getExternalStorageState()
          /*   if(external.equals(Environment.MEDIA_MOUNTED)){
 
                 val sd = Environment.getExternalStorageDirectory().toString()
@@ -220,4 +239,25 @@ class MainActivity : AppCompatActivity() {
             }*/
         }
     }
+    fun uploadtocloudstorage(file_uri:Uri){
+        val progressDialog:ProgressDialog
+//        progressDialog=ProgressDialog(applicationContext)
+//        progressDialog.setTitle("plz wait...")
+//        progressDialog.show()
+
+        val phonenumbername = auth.currentUser?.phoneNumber.toString()
+        if(file_uri!=null)
+        storageReference.child(phonenumbername+"_IMG").putFile(file_uri).addOnSuccessListener {
+            Toast.makeText(this, "Done",
+                Toast.LENGTH_SHORT).show()
+//            progressDialog.setTitle("sorry")
+//            progressDialog.dismiss();
+        }?.addOnCanceledListener {        Toast.makeText(this, "Not yet Uploaded",
+            Toast.LENGTH_SHORT).show()
+//            progressDialog.dismiss()
+        }
+
+    }
+
+
 }
