@@ -75,6 +75,8 @@
         android:src="@drawable/user" />
 
 
+
+
     <EditText
         android:id="@+id/user_name"
         android:layout_width="270sp"
