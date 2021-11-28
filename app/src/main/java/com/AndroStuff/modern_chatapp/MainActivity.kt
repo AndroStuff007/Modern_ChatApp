@@ -5,10 +5,12 @@ import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -22,6 +24,7 @@ import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import java.lang.Exception
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     //Declaration
     private lateinit var storage:FirebaseStorage
+    private lateinit var profileUri:Uri
     private lateinit var mobilenumber : EditText
     private lateinit var entereedOtp : EditText
     private lateinit var sendOtpButton : Button
@@ -115,6 +119,11 @@ class MainActivity : AppCompatActivity() {
             fetchImage()
         }
 
+        setup.setOnClickListener {
+            SaveData()
+            uploadtocloudstorage(profileUri)
+        }
+
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
             override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
 
@@ -137,17 +146,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//setup.setOnClickListener { uploadtocloudstorage(imagefile) }
+
     }
 
 
     //Methods
     private fun fetchImage() {
-        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-//        val intent = Intent(Intent.ACTION_PICK)
-  //      intent.type = "image/*"
-    //    startActivityForResult(intent,PICK_CODE)
-
         val intent=Intent()
         intent.type="image/*"
         intent.action=Intent.ACTION_GET_CONTENT
@@ -202,9 +206,55 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun uploadtocloudstorage(file_uri:Uri){
+        val progressDialog:ProgressDialog
+//        progressDialog=ProgressDialog(applicationContext)
+//        progressDialog.setTitle("plz wait...")
+//        progressDialog.show()
+
+        val phonenumbername = auth.currentUser?.phoneNumber.toString()
+        storageReference.child(phonenumbername+"_" + uname.text).putFile(file_uri).addOnSuccessListener {
+            Toast.makeText(this, "Profile Stored On Server Successfully",
+                Toast.LENGTH_SHORT).show()
+    //            progressDialog.setTitle("sorry")
+    //            progressDialog.dismiss();
+        }
+            .addOnCanceledListener {
+            Toast.makeText(this, "Not yet Uploaded",
+            Toast.LENGTH_SHORT).show()
+    //            progressDialog.dismiss()
+        }
+
+    }
+
+    fun SaveData(){
+
+        val external = Environment.getExternalStorageState()
+        if(external.equals(Environment.MEDIA_MOUNTED)){
+            val imageName :String = uname.text.toString() + ".jpg";
+            val sd = Environment.getExternalStorageDirectory().toString()
+            val file = File(sd,imageName)
+            try {
+                val stream:OutputStream = FileOutputStream(file)
+                val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, Uri.parse(profileUri.toString()))
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+                stream.flush()
+                stream.close()
+
+
+            }catch (e:Exception){
+
+            }
+
+        }else{
+            Toast.makeText(this, "Cannot access internal storage", Toast.LENGTH_SHORT).show()
+
+        }
+    }
 
 
 
+    //override Methods
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == 111 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
@@ -221,42 +271,10 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK && requestCode == PICK_CODE){
             Profile.setImageURI(data?.data)
-            imagefile = data?.data!!
-uploadtocloudstorage(data?.data!!)
-//            val external = Environment.getExternalStorageState()
-         /*   if(external.equals(Environment.MEDIA_MOUNTED)){
+            profileUri = data?.data!!
 
-                val sd = Environment.getExternalStorageDirectory().toString()
-                val file = File(sd,"image")
-                try {
-                    val ssteam:OutputStream = FileOutputStream(file)
-                    va
-                }catch ()
 
-            }else{
-                Toast.makeText(this, "Cannot access internal storage", Toast.LENGTH_SHORT).show()
-
-            }*/
         }
-    }
-    fun uploadtocloudstorage(file_uri:Uri){
-        val progressDialog:ProgressDialog
-//        progressDialog=ProgressDialog(applicationContext)
-//        progressDialog.setTitle("plz wait...")
-//        progressDialog.show()
-
-        val phonenumbername = auth.currentUser?.phoneNumber.toString()
-        if(file_uri!=null)
-        storageReference.child(phonenumbername+"_IMG").putFile(file_uri).addOnSuccessListener {
-            Toast.makeText(this, "Done",
-                Toast.LENGTH_SHORT).show()
-//            progressDialog.setTitle("sorry")
-//            progressDialog.dismiss();
-        }?.addOnCanceledListener {        Toast.makeText(this, "Not yet Uploaded",
-            Toast.LENGTH_SHORT).show()
-//            progressDialog.dismiss()
-        }
-
     }
 
 

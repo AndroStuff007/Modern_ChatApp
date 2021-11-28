@@ -7,25 +7,37 @@
     android:background="@color/dark"
     tools:context=".MainActivity">
 
-    <EditText
-        android:layout_width="300sp"
-        android:visibility="visible"
-        android:layout_height="50sp"
-        android:hint="@string/enter_mobile_number"
-        android:layout_marginTop="20sp"
-        android:paddingStart="20sp"
-        android:background="@drawable/edittext_bg"
-        android:layout_centerInParent="true"
-        android:id="@+id/user_mobile_number"
-        tools:ignore="RtlSymmetry"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MODERN CHATAPP"
+        android:paddingTop="20sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
-        android:alpha="0.6"/>
+    <EditText
+        android:id="@+id/user_mobile_number"
+        android:layout_width="300sp"
+        android:layout_height="50sp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20sp"
+        android:alpha="0.6"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/enter_mobile_number"
+        android:paddingStart="20sp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textStyle="bold"
+        android:visibility="visible"
+        tools:ignore="RtlSymmetry" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/get_otp"
         android:visibility="visible"
+        android:textColor="@color/white"
         android:layout_below="@+id/user_mobile_number"
         android:layout_centerInParent="true"
         android:layout_marginTop="13sp"
@@ -34,18 +46,18 @@
         android:id="@+id/get_otp_button"/>
 
 
-
-
-
     <EditText
         android:id="@+id/user_entered_otp"
         android:layout_width="200sp"
         android:layout_height="50sp"
-        android:paddingStart="14sp"
+        android:layout_centerInParent="true"
+        android:textColorHint="@color/white"
+        android:textColor="@color/white"
         android:background="@drawable/edittext_bg"
         android:hint="@string/enter_otp"
+        android:textStyle="bold"
+        android:paddingStart="14sp"
         android:visibility="invisible"
-        android:layout_centerInParent="true"
         tools:ignore="RtlSymmetry,TextFields" />
 
     <Button
@@ -55,24 +67,22 @@
         android:layout_below="@+id/user_entered_otp"
         android:layout_centerInParent="true"
         android:layout_marginTop="13sp"
+        android:textColor="@color/white"
         android:visibility="invisible"
         android:background="@drawable/button_rounded"
         android:textStyle="bold"
         android:id="@+id/submit_otp"/>
 
 
-
-
-
-
-
     <ImageView
+        android:id="@+id/profile"
         android:layout_width="100sp"
         android:layout_height="100sp"
-        android:id="@+id/profile"
         android:layout_centerInParent="true"
+        android:src="@drawable/user"
         android:visibility="invisible"
-        android:src="@drawable/user" />
+
+        />
 
 
 
@@ -85,6 +95,8 @@
         android:layout_marginTop="13sp"
         android:background="@drawable/edittext_bg"
         android:hint="@string/username"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
         android:visibility="invisible"
         android:layout_centerInParent="true"
         android:layout_below="@+id/profile"
@@ -95,6 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/setup"
+        android:textColor="@color/white"
         android:layout_below="@+id/user_name"
         android:layout_centerInParent="true"
         android:layout_marginTop="13sp"

@@ -3,7 +3,7 @@
     <string name="enter_mobile_number">Enter Mobile Number</string>
     <string name="get_otp">GET OTP</string>
     <string name="submit">submit</string>
-    <string name="enter_otp">Enter Otp</string>
+    <string name="enter_otp">Enter OTP</string>
     <string name="setup">setup</string>
     <string name="username">Username</string>
 </resources>
