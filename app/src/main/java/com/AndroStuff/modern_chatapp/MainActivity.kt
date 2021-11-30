@@ -116,12 +116,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         Profile.setOnClickListener {
-            fetchImage()
+            fetchImageFromGallery()
         }
 
         setup.setOnClickListener {
-            SaveData()
-            uploadtocloudstorage(profileUri)
+            saveData()
+            uploadToCloudStorage(profileUri)
         }
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
 
 
     //Methods
-    private fun fetchImage() {
+    private fun fetchImageFromGallery() {
         val intent=Intent()
         intent.type="image/*"
         intent.action=Intent.ACTION_GET_CONTENT
@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun SetVisibility(requestCode : Int){
-
+//request code 0 to make otp button visible
         if(requestCode == 0){
             mobilenumber.visibility = View.GONE
             sendOtpButton.visibility = View.GONE
@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity() {
             entereedOtp.visibility = View.VISIBLE
             submitOtpButton.visibility = View.VISIBLE
         }
-
+//request Code 1 to make profile part visible
         if(requestCode == 1){
 
             entereedOtp.visibility = View.GONE
@@ -202,32 +202,25 @@ class MainActivity : AppCompatActivity() {
             Profile.visibility = View.VISIBLE
             uname.visibility = View.VISIBLE
             setup.visibility = View.VISIBLE
+    loadImageFromCloudStorage()
         }
 
     }
 
-    fun uploadtocloudstorage(file_uri:Uri){
-        val progressDialog:ProgressDialog
-//        progressDialog=ProgressDialog(applicationContext)
-//        progressDialog.setTitle("plz wait...")
-//        progressDialog.show()
-
+    fun uploadToCloudStorage(file_uri:Uri){
         val phonenumbername = auth.currentUser?.phoneNumber.toString()
         storageReference.child(phonenumbername+"_" + uname.text).putFile(file_uri).addOnSuccessListener {
             Toast.makeText(this, "Profile Stored On Server Successfully",
                 Toast.LENGTH_SHORT).show()
-    //            progressDialog.setTitle("sorry")
-    //            progressDialog.dismiss();
         }
             .addOnCanceledListener {
             Toast.makeText(this, "Not yet Uploaded",
             Toast.LENGTH_SHORT).show()
-    //            progressDialog.dismiss()
         }
 
     }
-
-    fun SaveData(){
+//By following The Camel Case
+    fun saveData(){
 
         val external = Environment.getExternalStorageState()
         if(external.equals(Environment.MEDIA_MOUNTED)){
@@ -277,5 +270,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    fun loadImageFromCloudStorage(){
+        val thread = Thread {
+//            val result: String = performBlockingTask()
+            runOnUiThread {
+            val pathReference=storageReference.child("")
+
+
+            }
+        }
+
+        thread.start()
+    }
 
 }
